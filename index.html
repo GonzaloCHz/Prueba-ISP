@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integracion de Sistemas y Plataformas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Contactos</h1>
+
+    <form id="contactForm" class="mb-4">
+      <input type="text" id="name" placeholder="Nombre" class="border p-2 mr-2">
+      <input type="email" id="email" placeholder="Email" class="border p-2">
+      <button type="submit" class="bg-blue-500 text-white p-2 ml-2">Añadir</button>
+    </form>
+    <ul id="contactList" class="list-disc pl-6"></ul>
+  </div>
+  <script>
+    async function fetchContacts() {
+      const res = await fetch('/contacts');
+      const contacts = await res.json();
+      const contactList = document.getElementById('contactList');
+      contactList.innerHTML = '';
+      contacts.forEach(contact => {
+        const li = document.createElement('li');
+        li.textContent = `${contact.name} - ${contact.email}`;
+        contactList.appendChild(li);
+      });
+    }
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      await fetch('/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email })
+      });
+      fetchContacts();
+    });
+    fetchContacts();
+  </script>
+</body>
+</html>

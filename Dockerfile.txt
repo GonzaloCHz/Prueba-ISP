@@ -1,0 +1,19 @@
+FROM node:16
+
+WORKDIR /app
+
+RUN useradd -m -s /bin/bash appuser
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN chown -R appuser:appuser /app /root/.npm
+
+EXPOSE 3000
+
+USER appuser
+
+CMD ["npm", "start"]
